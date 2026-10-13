@@ -1,6 +1,26 @@
 import { useState, useEffect } from "react";
 import logoImg from "@/imports/image.png";
+const labelStyle: React.CSSProperties = {
+  display: "block",
+  fontSize: 11,
+  fontWeight: 700,
+  letterSpacing: "0.12em",
+  textTransform: "uppercase",
+  color: "rgba(255,255,255,0.4)",
+  marginBottom: 8,
+};
 
+const inputStyle: React.CSSProperties = {
+  width: "100%",
+  background: "rgba(255,255,255,0.07)",
+  border: "1px solid rgba(255,255,255,0.15)",
+  borderRadius: 10,
+  padding: "12px 16px",
+  color: "white",
+  fontSize: 15,
+  outline: "none",
+  fontFamily: "'Inter', sans-serif",
+};
 /* ─── LOGO ─────────────────────────────────────────────────────────────── */
 // blend="multiply"  → white bg disappears on light surfaces (ivory nav, footer pill)
 // blend="screen"    → dark bg disappears on dark surfaces (not used currently)
@@ -925,11 +945,45 @@ function Contact() {
   const [sent, setSent] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setTimeout(() => { setLoading(false); setSent(true); }, 1200);
-  };
+ const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  setLoading(true);
+
+  try {
+    const response = await fetch(
+      "https://formsubmit.co/ajax/unitedseniorliving@gmail.com",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          inquiry_type: form.type,
+          message: form.message,
+          _subject: "New United Senior Living Website Inquiry",
+        }),
+      }
+    );
+
+    const result = await response.json();
+
+    if (!response.ok || result.success !== "true" && result.success !== true) {
+      throw new Error("Submission failed");
+    }
+
+    setSent(true);
+  } catch {
+    alert(
+      "Your message could not be sent. Please try again or email unitedseniorliving@gmail.com directly."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <section id="contact" style={{ background: "#1a2744", padding: "96px 24px" }}>
@@ -1031,20 +1085,50 @@ function Contact() {
                 <FormField label="Full Name" type="text" placeholder="Your name" value={form.name} onChange={v => setForm({ ...form, name: v })} required />
                 <FormField label="Phone Number" type="tel" placeholder="(559) 000-0000" value={form.phone} onChange={v => setForm({ ...form, phone: v })} required />
               </div>
-              <FormField label="Email Address" type="email" placeholder="your@email.com" value={form.email} onChange={v => setForm({ ...form, email: v })} required />
-              <div>
-                <label style={labelStyle}>Message</label>
-                <textarea
-                  placeholder="Tell us about your loved one's needs, questions about availability, or anything you'd like to know..."
-                  rows={5}
-                  value={form.message}
-                  onChange={e => setForm({ ...form, message: e.target.value })}
-                  style={{ ...inputStyle, resize: "none" }}
-                />
-              </div>
-              <button type="submit" className="btn-primary" style={{ justifyContent: "center", fontSize: 16, padding: "16px", opacity: loading ? 0.7 : 1, transition: "opacity 0.2s" }} disabled={loading}>
-                {loading ? "Sending..." : "Send Message →"}
-              </button>
+             <FormField
+  label="Email Address"
+  type="email"
+  placeholder="your@email.com"
+  value={form.email}
+  onChange={v => setForm({ ...form, email: v })}
+  required
+/>
+
+{/* Privacy notice */}
+<p style={{
+  fontSize: 12,
+  lineHeight: 1.6,
+  color: "rgba(255,255,255,0.55)"
+}}>
+  Please do not include confidential medical, financial, or other sensitive
+  personal information in this message.
+</p>
+
+<div>
+  <label style={labelStyle}>Message</label>
+  <textarea
+    placeholder="Tell us about your loved one's needs, questions about availability, or anything you'd like to know..."
+    rows={5}
+    value={form.message}
+    onChange={e => setForm({ ...form, message: e.target.value })}
+    style={{ ...inputStyle, resize: "none" }}
+  />
+</div>
+
+<button
+  type="submit"
+  className="btn-primary"
+  style={{
+    justifyContent: "center",
+    fontSize: 16,
+    padding: "16px",
+    opacity: loading ? 0.7 : 1,
+    transition: "opacity 0.2s"
+  }}
+  disabled={loading}
+>
+  {loading ? "Sending..." : "Send Message →"}
+</button>
             </form>
           )}
         </div>
@@ -1053,14 +1137,32 @@ function Contact() {
   );
 }
 
-const labelStyle: React.CSSProperties = { display: "block", fontSize: 11, fontWeight: 700, letterSpacing: "0.12em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 8 };
-const inputStyle: React.CSSProperties = { width: "100%", background: "rgba(255,255,255,0.07)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 10, padding: "12px 16px", color: "white", fontSize: 15, outline: "none", fontFamily: "'Inter', sans-serif" };
-
-function FormField({ label, type, placeholder, value, onChange, required }: { label: string; type: string; placeholder: string; value: string; onChange: (v: string) => void; required?: boolean }) {
+function FormField({
+  label,
+  type,
+  placeholder,
+  value,
+  onChange,
+  required,
+}: {
+  label: string;
+  type: string;
+  placeholder: string;
+  value: string;
+  onChange: (v: string) => void;
+  required?: boolean;
+}) {
   return (
     <div>
       <label style={labelStyle}>{label}</label>
-      <input type={type} placeholder={placeholder} value={value} onChange={e => onChange(e.target.value)} required={required} style={inputStyle} />
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        required={required}
+        style={inputStyle}
+      />
     </div>
   );
 }
