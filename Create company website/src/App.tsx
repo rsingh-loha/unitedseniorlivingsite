@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import logoImg from "@/imports/image.png";
 
 /* ─── LOGO ─────────────────────────────────────────────────────────────── */
@@ -995,30 +995,6 @@ function Contact() {
               <div style={{ fontSize: 11, textTransform: "uppercase", letterSpacing: "0.12em", color: "rgba(255,255,255,0.35)", marginBottom: 6 }}>RCFE License</div>
               <div style={{ fontSize: 14, color: "rgba(255,255,255,0.55)" }}>License Application: Completed ✓</div>
               <div style={{ fontSize: 12, color: "rgba(255,255,255,0.3)", marginTop: 4 }}>License number pending — contact us for details</div>
-            </div>
-
-            {/* QR Code */}
-            <div style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 16, padding: "20px 24px", display: "flex", gap: 20, alignItems: "center" }}>
-              <div style={{ background: "white", borderRadius: 10, padding: 8, flexShrink: 0 }}>
-                <img
-                  src={`https://api.qrserver.com/v1/create-qr-code/?size=100x100&data=${encodeURIComponent("https://www.unitedseniorliving.com")}&color=1a2744&bgcolor=ffffff&margin=0`}
-                  alt="QR code to contact United Senior Living"
-                  width={100}
-                  height={100}
-                  style={{ display: "block", borderRadius: 4 }}
-                />
-              </div>
-              <div>
-                <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", color: "rgba(255,255,255,0.4)", marginBottom: 6 }}>
-                  Scan to Connect
-                </div>
-                <div style={{ fontSize: 14, color: "white", fontWeight: 600, marginBottom: 4 }}>
-                  United Senior Living
-                </div>
-                <div style={{ fontSize: 13, color: "rgba(255,255,255,0.5)", lineHeight: 1.5 }}>
-                  Scan with your phone camera to save our contact info or share with a loved one.
-                </div>
-              </div>
             </div>
           </div>
 
